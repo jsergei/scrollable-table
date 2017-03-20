@@ -2,11 +2,14 @@
   border: 1px solid black;
 }
 
+.container table {
+  table-layout: fixed;
+}
+
 .container-table {
    width: 100%;
    box-sizing: border-box;
    border-collapse: collapse;
-   table-layout: fixed;
 }
 
 .container-table * {
