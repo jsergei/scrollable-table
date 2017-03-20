@@ -12,7 +12,7 @@
   "dependencies": {
     "jquery": "^3.2.0",
     "knockout": "^3.4.2",
-    "normalize.css": "^5.0.0"
+    "normalize.css": "^3.0.3"
   },
   "devDependencies": {
     "concurrently": "^3.2.0",

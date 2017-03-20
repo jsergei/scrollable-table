@@ -1,20 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Scrollable table</title>
-    <base href="/">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
-  </head>
+<head>
+  <title>Scrollable table</title>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+  <link rel="stylesheet" href="main.css">
+</head>
+<body style="margin: 20px auto; width: 500px;">
+  <div class="container">
+		<table class="container-table">
+		  <tr>
+		    <td>
+		       <table class="head-table">
+		         <tr>
+		            <th>Header 1</th>
+		            <th>Header 2</th>
+								<th>Header 3</th>
+		         </tr>
+		       </table>
+		    </td>
+				<td class="scroll-space"></td>
+		  </tr>
+		  <tr>
+		    <td colspan="2">
+		       <div class="body-table-container">
+		         <table>
+		           <tr>
+		             <td>new item new item new item new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item item new item new item new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item item new item new item new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		           <tr>
+		             <td>new item</td>
+		             <td>new item</td>
+								 <td>new item</td>
+		           </tr>
+		         </table>
+		       </div>
+		    </td>
+		  </tr>
+		</table>
+	</div>
 
-  <body>
-    <div>Hello a</div>
+  <script src="node_modules\jquery\dist\jquery.js"></script>
+  <script src="node_modules\knockout\build\output\knockout-latest.js"></script>
 
-    <script src="node_modules\jquery\dist\jquery.js"></script>
-    <script src="node_modules\knockout\build\output\knockout-latest.js"></script>
-
-    <script src="main.js"></script>
-  </body>
+  <script src="main.js"></script>
+</body>
 </html>
