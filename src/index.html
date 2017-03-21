@@ -21,7 +21,7 @@
          <th data-bind="text: headers.version"></th>
       </tr>
     </thead>
-    <tbody data-bind="foreach: rows">
+    <tbody>
       <tr>
          <td data-bind="text: id"></td>
          <td data-bind="text: itemName"></td>
@@ -37,8 +37,10 @@
   <button style="margin: 10px;" data-bind="click: toggleRows">Toggle rows</button>
 
   <script src="node_modules\jquery\dist\jquery.js"></script>
-  <script src="node_modules\knockout\build\output\knockout-latest.js"></script>
+  <script src="node_modules\knockout\build\output\knockout-latest.debug.js"></script>
+  <script src="node_modules\underscore\underscore.js"></script>
 
   <script src="main.js"></script>
+  <script src="scrollable-table.js"></script>
 </body>
 </html>
