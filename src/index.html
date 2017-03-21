@@ -8,81 +8,33 @@
   <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
   <link rel="stylesheet" href="main.css">
 </head>
-<body style="margin: 20px auto; width: 500px;">
-  <div class="container">
-		<table class="container-table">
-		  <tr>
-		    <td>
-		       <table class="head-table">
-		         <tr>
-		            <th>Header 1</th>
-		            <th>Header 2</th>
-								<th>Header 3</th>
-		         </tr>
-		       </table>
-		    </td>
-				<td class="scroll-space"></td>
-		  </tr>
-		  <tr>
-		    <td colspan="2">
-		       <div class="body-table-container">
-		         <table>
-		           <tr>
-		             <td>new item new item new item new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item item new item new item new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item item new item new item new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		           <tr>
-		             <td>new item</td>
-		             <td>new item</td>
-								 <td>new item</td>
-		           </tr>
-		         </table>
-		       </div>
-		    </td>
-		  </tr>
-		</table>
-	</div>
+<body style="margin: 20px auto; width: 1000px;">
+  <div data-bind="scrollableTable: rows">
+    <table>
+      <thead>
+      <tr>
+         <th data-bind="text: headers.itemPosition"></th>
+         <th data-bind="text: headers.itemName"></th>
+         <th data-bind="text: headers.meanMaxMark"></th>
+         <th data-bind="text: headers.itemExposure"></th>
+         <th data-bind="text: headers.attempted"></th>
+         <th data-bind="text: headers.version"></th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: rows">
+      <tr>
+         <td data-bind="text: id"></td>
+         <td data-bind="text: itemName"></td>
+         <td data-bind="text: meanMaxMark"></td>
+         <td data-bind="text: exposure"></td>
+         <td data-bind="text: attemptedProc"></td>
+         <td data-bind="text: version"></td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+
+  <button style="margin: 10px;" data-bind="click: toggleRows">Toggle rows</button>
 
   <script src="node_modules\jquery\dist\jquery.js"></script>
   <script src="node_modules\knockout\build\output\knockout-latest.js"></script>
