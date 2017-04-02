@@ -69,14 +69,16 @@
 		return footer;
 	}
 
-	function showFooter(selectors, height) {
+	function showFooter(selectors, height, isEmpty) {
 		selectors.footer.style.display = "table-row-group";
 		selectors.footerRow.style.height = height + 'px';
+		selectors.footer.className = isEmpty ? 'no-rows' : '';
 	}
 
 	function hideFooter(selectors) {
 		selectors.footer.style.display = "none";
 		selectors.footerRow.style.height = 0;
+		selectors.footer.className = '';
 	}
 
 	function wrapUpIntoTemplate(el) {
@@ -110,6 +112,8 @@
 		el.replaceChild(frg, el.firstChild);
 
 		return {
+			root: el,
+			rootHeaderRow: el.querySelector('.container-table > tbody > tr:first-child'),
 			headerTable: el.querySelector('.head-table'),
 			scrollSpace: el.querySelector('.scroll-space'),
 			bodyContainer: el.querySelector('.body-table-container'),
@@ -128,10 +132,17 @@
 	function drawBottomLines(selectors) {
 		var heightDiff = selectors.bodyContainer.offsetHeight - selectors.body.offsetHeight;
 		if (heightDiff > 0) {
-			showFooter(selectors, heightDiff);
+			showFooter(selectors, heightDiff, selectors.body.childElementCount === 0);
 		} else {
 			hideFooter(selectors);
 		}
+	}
+
+	function setBodyContainerHeight(selectors) {
+		var rootH = selectors.root.offsetHeight,
+			rootHeaderRowH = selectors.rootHeaderRow.offsetHeight,
+			bordersSumH = 3;
+		selectors.bodyContainer.style.height = rootH - rootHeaderRowH - bordersSumH + 'px';
 	}
 
 	ko.bindingHandlers.scrollableTable = {
@@ -143,10 +154,12 @@
 				var innerBindingContext = bindingContext.extend({
 					rows: valueAccessor(),
 					afterDomUpdate: function () {
-						setScrollWidth(selectors);
+						setBodyContainerHeight(selectors);
 						drawBottomLines(selectors);
+						setScrollWidth(selectors);
 					}
 				});
+
 				ko.applyBindingsToDescendants(innerBindingContext, element);
 
 				return { controlsDescendantBindings: true };

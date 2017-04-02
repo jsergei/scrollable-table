@@ -45,12 +45,23 @@ var MyApp = MyApp || {};
 
 		this.rows = ko.observableArray(rows.concat(fillerRows));
 
+		var rowToggleChoice = [
+			[],
+			rows,
+			rows.concat(fillerRows),
+			[],
+			rows.concat(fillerRows),
+			[],
+			rows.concat(fillerRows),
+			rows
+		],
+			j = 0;
+
 		this.toggleRows = function () {
-			if (this.rows().length != 3) {
-				this.rows(rows);
-			} else {
-				this.rows(rows.concat(fillerRows));
+			if (j === rowToggleChoice.length) {
+				j = 0;
 			}
+			this.rows(rowToggleChoice[j++]);
 		};
 	};
 
