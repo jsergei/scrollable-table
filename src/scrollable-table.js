@@ -1,12 +1,11 @@
 (function () {
 	ko.bindingHandlers.afterForeachDomUpdate = {
 		init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-			var arg = valueAccessor(),
-				func = typeof arg === 'function' ? arg : function ()  {};
+			var arg = valueAccessor();
 			allBindings().foreach.subscribe(function (newValue) {
-				func();
+				arg.update();
 			});
-			func();
+			arg.init();
     }
 	};
 
@@ -100,7 +99,7 @@
 
 		// Clone and move the existing body.
 		var tbodyClone = el.querySelector('table tbody').cloneNode(true);
-		tbodyClone.setAttribute('data-bind', 'foreach: rows, afterForeachDomUpdate: afterDomUpdate');
+		tbodyClone.setAttribute('data-bind', 'foreach: rows, afterForeachDomUpdate: {init: afterDomInit, update: afterDomUpdate}');
 		var tbody = frg.querySelector('.body-table');
 		tbody.appendChild(tbodyClone);
 		tbody.appendChild(createFooter(frg));
@@ -151,14 +150,25 @@
 				validateSourceTemplateStructure(element);
 				var selectors = wrapUpIntoTemplate(element);
 
+				var updateAll = function () {
+					setBodyContainerHeight(selectors);
+					drawBottomLines(selectors);
+					setScrollWidth(selectors);
+				};
+
 				var innerBindingContext = bindingContext.extend({
 					rows: valueAccessor(),
+					afterDomInit: updateAll,
 					afterDomUpdate: function () {
-						setBodyContainerHeight(selectors);
 						drawBottomLines(selectors);
 						setScrollWidth(selectors);
 					}
 				});
+
+				var resizeListener = allBindings().resizeListener;
+				if (resizeListener && ko.isObservable(resizeListener)) {
+					resizeListener.subscribe(updateAll);
+				}
 
 				ko.applyBindingsToDescendants(innerBindingContext, element);
 

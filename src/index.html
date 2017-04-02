@@ -8,8 +8,16 @@
   <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
   <link rel="stylesheet" href="main.css">
 </head>
-<body style="margin: 20px auto; width: 1000px;">
-  <div data-bind="scrollableTable: rows">
+<body style="margin: 0 auto; width: 1000px;">
+  <div style="margin-top: 20px;">
+    <button style="margin: 10px;" data-bind="click: toggleRows">Toggle rows</button>
+    <button style="margin: 10px;" data-bind="click: pushWidth">Width++</button>
+    <button style="margin: 10px;" data-bind="click: pullWidth">Width--</button>
+    <button style="margin: 10px;" data-bind="click: pushHeight">Height++</button>
+    <button style="margin: 10px;" data-bind="click: pullHeight">Height--</button>
+  </div>
+
+  <div id="container" data-bind="scrollableTable: rows, resizeListener: resizable">
     <table>
       <thead>
       <tr>
@@ -34,7 +42,6 @@
     </table>
   </div>
 
-  <button style="margin: 10px;" data-bind="click: toggleRows">Toggle rows</button>
   <script src="node_modules\knockout\build\output\knockout-latest.debug.js"></script>
 
   <script src="main.js"></script>

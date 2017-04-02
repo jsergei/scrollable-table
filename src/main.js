@@ -62,7 +62,31 @@ var MyApp = MyApp || {};
 				j = 0;
 			}
 			this.rows(rowToggleChoice[j++]);
-		};
+		}.bind(this);
+
+		this.resizable = ko.observable();
+
+		var container = document.getElementById('container');
+
+		this.pushWidth = function () {
+			container.style.width = container.offsetWidth + 10 + 'px';
+			this.resizable.valueHasMutated();
+		}.bind(this);
+
+		this.pullWidth = function () {
+			container.style.width = container.offsetWidth - 10 + 'px';
+			this.resizable.valueHasMutated();
+		}.bind(this);
+
+		this.pushHeight = function () {
+			container.style.height = container.offsetHeight + 10 + 'px';
+			this.resizable.valueHasMutated();
+		}.bind(this);
+
+		this.pullHeight = function () {
+			container.style.height = container.offsetHeight - 10 + 'px';
+			this.resizable.valueHasMutated();
+		}.bind(this);
 	};
 
 	app.tableViewModel = new TableViewModel();
