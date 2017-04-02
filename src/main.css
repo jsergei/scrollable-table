@@ -63,19 +63,15 @@
 
 /*concrete styles*/
 
-.head-table th:first-child {
+.col-wide {
   width: 30%;
 }
 
-.head-table th:last-child {
-  width: 20%;
+.col-default {
+  width: auto;
 }
 
-.body-table td:first-child {
-  width: 30%;
-}
-
-.body-table td:last-child {
+.col-shorter {
   width: 20%;
 }
 

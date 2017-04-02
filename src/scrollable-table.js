@@ -93,14 +93,23 @@
 		// Copy exising classes into the root.
 		frg.firstChild.className += el.firstChild.className;
 
+		var colGroup = el.querySelector('colgroup');
+
 		// Clone and move the exsiting head.
 		var theadClone = el.querySelector('table thead').cloneNode(true);
-		frg.querySelector('.head-table').appendChild(theadClone);
+		var thead = frg.querySelector('.head-table');
+		if (colGroup) {
+			thead.appendChild(colGroup.cloneNode(true));
+		}
+		thead.appendChild(theadClone);
 
 		// Clone and move the existing body.
 		var tbodyClone = el.querySelector('table tbody').cloneNode(true);
 		tbodyClone.setAttribute('data-bind', 'foreach: rows, afterForeachDomUpdate: {init: afterDomInit, update: afterDomUpdate}');
 		var tbody = frg.querySelector('.body-table');
+		if (colGroup) {
+			tbody.appendChild(colGroup.cloneNode(true));
+		}
 		tbody.appendChild(tbodyClone);
 		tbody.appendChild(createFooter(frg));
 		hideFooter({
