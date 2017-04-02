@@ -57,6 +57,6 @@ var MyApp = MyApp || {};
 	app.tableViewModel = new TableViewModel();
 }(MyApp));
 
-$(function () {
-	ko.applyBindings(MyApp.tableViewModel, document.getElementsByTagName('body')[0]);
+document.addEventListener('DOMContentLoaded', function () {
+	ko.applyBindings(MyApp.tableViewModel, document.body);;
 })
