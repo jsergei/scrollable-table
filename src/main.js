@@ -87,6 +87,13 @@ var MyApp = MyApp || {};
 			container.style.height = container.offsetHeight - 10 + 'px';
 			this.resizable.valueHasMutated();
 		}.bind(this);
+
+		this.orderListener = ko.observable();
+
+		var orderResult = document.getElementById('order-result');
+		this.orderListener.subscribe(function (order) {
+			orderResult.innerHTML = JSON.stringify(order);
+		});
 	};
 
 	app.tableViewModel = new TableViewModel();

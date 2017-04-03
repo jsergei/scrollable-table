@@ -1,6 +1,16 @@
 (function () {
+	var constants = {
+		thHovered: 'head-hover',
+		orderKeyAttr: 'data-orderkey',
+		activeTh: 'st-active',
+		arrowUp: 'st-arrow-up',
+		arrowDown: 'st-arrow-down',
+		directionUp: 0,
+		directionDown: 1
+	};
+
 	ko.bindingHandlers.afterForeachDomUpdate = {
-		init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+		init: function(element, valueAccessor, allBindings) {
 			var arg = valueAccessor();
 			allBindings().foreach.subscribe(function (newValue) {
 				arg.update();
@@ -8,6 +18,120 @@
 			arg.init();
     }
 	};
+
+	function addClass(element, cls) {
+		if (!hasClass(element, cls)) {
+			element.className = element.className.length ? (element.className + ' ' + cls) : cls;
+		}
+	}
+
+	function hasClass(element, cls) {
+    return element.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+	}
+
+	function removeClass(element, cls) {
+    if (hasClass(element, cls)) {
+      var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+      element.className = element.className.replace(reg, ' ').trim();
+    }
+  }
+
+	ko.bindingHandlers.orderableHeader = {
+		init: function(element, valueAccessor) {
+			var args = valueAccessor(),
+				scrollSpace = args.scrollSpace,
+				onOrder = args.onOrder,
+				orderableRow = element.querySelector('tr:last-child'),
+				orderableHeaders = orderableRow.querySelectorAll('th[data-orderkey]'),
+				i = 0, j = 0;
+
+			if (!orderableHeaders.length)
+				return;
+
+			var touchesScrollSpace = orderableHeaders[orderableHeaders.length - 1] === orderableRow.querySelector('th:last-child');
+			var connectedToScrollTh = orderableHeaders[orderableHeaders.length - 1];
+
+			var clickTh = function (th) {
+				if (th.hasAttribute(constants.orderKeyAttr)) {
+					var key = parseInt(th.getAttribute(constants.orderKeyAttr), 10),
+						direction = constants.directionUp;
+
+					if (hasClass(th, constants.activeTh)) {
+						if (hasClass(th, constants.arrowUp)) {
+							removeClass(th, constants.arrowUp);
+							addClass(th, constants.arrowDown);
+							direction = constants.directionDown;
+						} else {
+							removeClass(th, constants.arrowDown);
+							addClass(th, constants.arrowUp);
+							direction = constants.directionUp;
+						}
+					} else {
+						for (i = 0; i < orderableHeaders.length; i++) {
+							removeClass(orderableHeaders[i], constants.activeTh);
+							removeClass(orderableHeaders[i], constants.arrowUp);
+							removeClass(orderableHeaders[i], constants.arrowDown);
+						}
+
+						addClass(th, constants.activeTh);
+						addClass(th, constants.arrowUp);
+						direction = constants.directionUp;
+					}
+
+					onOrder({ key: key, direction: direction });
+				}
+			};
+
+			orderableRow.addEventListener('click', function (e) {
+				clickTh(e.target);
+			}, false);
+
+			if (touchesScrollSpace) {
+				scrollSpace.addEventListener('click', function (e) {
+					clickTh(connectedToScrollTh);
+				}, false);
+			}
+
+			for (i = 0; i < orderableHeaders.length; i++) {
+				if (touchesScrollSpace && i === orderableHeaders.length - 1) {
+					orderableHeaders[i].addEventListener('mouseenter', function (e) {
+						addClass(e.target, constants.thHovered);
+						addClass(scrollSpace, constants.thHovered);
+					}, false);
+
+					orderableHeaders[i].addEventListener('mouseleave', function (e) {
+						removeClass(e.target, constants.thHovered);
+						removeClass(scrollSpace, constants.thHovered);
+					}, false);
+				} else {
+					orderableHeaders[i].addEventListener('mouseenter', function (e) {
+						addClass(e.target, constants.thHovered);
+					}, false);
+
+					orderableHeaders[i].addEventListener('mouseleave', function (e) {
+						removeClass(e.target, constants.thHovered);
+					}, false);
+				}
+			}
+
+			if (touchesScrollSpace) {
+				scrollSpace.addEventListener('mouseenter', function (e) {
+					addClass(e.target, constants.thHovered);
+					addClass(connectedToScrollTh, constants.thHovered);
+				}, false);
+
+				scrollSpace.addEventListener('mouseleave', function (e) {
+					removeClass(e.target, constants.thHovered);
+					removeClass(connectedToScrollTh, constants.thHovered);
+				}, false);
+			}
+
+			// init arrows
+			addClass(orderableHeaders[0], constants.activeTh);
+			addClass(orderableHeaders[0], constants.arrowUp);
+    }
+	};
+
 
 	var tableTemplate =
 		'<table class="container-table">' +
@@ -81,7 +205,7 @@
 	}
 
 	function wrapUpIntoTemplate(el) {
-		el.className += 'container';
+		el.className += ' container';
 
 		// Init a document fragment with a prepared html template.
 		var frg = document.createDocumentFragment();
@@ -101,6 +225,7 @@
 		if (colGroup) {
 			thead.appendChild(colGroup.cloneNode(true));
 		}
+		theadClone.setAttribute('data-bind', 'orderableHeader: {scrollSpace: scrollSpace, onOrder: onOrder}');
 		thead.appendChild(theadClone);
 
 		// Clone and move the existing body.
@@ -165,7 +290,14 @@
 					setScrollWidth(selectors);
 				};
 
+				var orderNotifier = allBindings().orderNotifier;
+				var onOrder = orderNotifier && ko.isObservable(orderNotifier)
+					? function (order) { orderNotifier(order); }
+					: function () {};
+
 				var innerBindingContext = bindingContext.extend({
+					scrollSpace: selectors.scrollSpace,
+					onOrder: onOrder,
 					rows: valueAccessor(),
 					afterDomInit: updateAll,
 					afterDomUpdate: function () {

@@ -29,6 +29,32 @@
 .head-table th {
   padding: 10px 5px;
   height: 3em;
+  position: relative;
+}
+
+.table-orderable .head-table th {
+  padding-right: 20px;
+}
+
+.head-hover {
+  background: orange;
+  cursor: pointer;
+}
+
+.table-orderable .st-active::after {
+  position: absolute;
+  display: block;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.table-orderable .st-active.st-arrow-up::after {
+  content: "U";
+}
+
+.table-orderable .st-active.st-arrow-down::after {
+  content: "D";
 }
 
 .head-table th + th {

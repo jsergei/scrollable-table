@@ -17,7 +17,7 @@
     <button style="margin: 10px;" data-bind="click: pullHeight">Height--</button>
   </div>
 
-  <div id="container" data-bind="scrollableTable: rows, resizeListener: resizable">
+  <div id="container" class="table-orderable" data-bind="scrollableTable: rows, resizeListener: resizable, orderNotifier: orderListener">
     <table>
       <colgroup>
           <col class="col-wide">
@@ -27,11 +27,11 @@
       <thead>
       <tr>
          <th data-bind="text: headers.itemPosition"></th>
-         <th data-bind="text: headers.itemName"></th>
-         <th data-bind="text: headers.meanMaxMark"></th>
-         <th data-bind="text: headers.itemExposure"></th>
-         <th data-bind="text: headers.attempted"></th>
-         <th data-bind="text: headers.version"></th>
+         <th data-bind="text: headers.itemName" data-orderkey="1"></th>
+         <th data-bind="text: headers.meanMaxMark" data-orderkey="2"></th>
+         <th data-bind="text: headers.itemExposure" data-orderkey="3"></th>
+         <th data-bind="text: headers.attempted" data-orderkey="4"></th>
+         <th data-bind="text: headers.version" data-orderkey="5"></th>
       </tr>
     </thead>
     <tbody>
@@ -46,6 +46,8 @@
     </tbody>
     </table>
   </div>
+
+  <div style="margin: 20px;" id="order-result"></div>
 
   <script src="node_modules\knockout\build\output\knockout-latest.debug.js"></script>
 
