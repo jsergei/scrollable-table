@@ -2,9 +2,9 @@
 	var constants = {
 		thHovered: 'head-hover',
 		orderKeyAttr: 'data-orderkey',
-		activeTh: 'st-active',
 		arrowUp: 'st-arrow-up',
 		arrowDown: 'st-arrow-down',
+		beingClicked: 'st-mousedown',
 		directionUp: 0,
 		directionDown: 1
 	};
@@ -36,6 +36,16 @@
     }
   }
 
+	function getParentWithAttr(element, parentAttr, topParent) {
+		if (element.hasAttribute(parentAttr)) {
+			return element;
+		} else if (element !== topParent && element.parentNode) {
+			return getParentWithAttr(element.parentNode, parentAttr);
+		} else {
+			return null;
+		}
+	}
+
 	ko.bindingHandlers.orderableHeader = {
 		init: function(element, valueAccessor) {
 			var args = valueAccessor(),
@@ -52,43 +62,67 @@
 			var connectedToScrollTh = orderableHeaders[orderableHeaders.length - 1];
 
 			var clickTh = function (th) {
-				if (th.hasAttribute(constants.orderKeyAttr)) {
-					var key = parseInt(th.getAttribute(constants.orderKeyAttr), 10),
-						direction = constants.directionUp;
+				var key = parseInt(th.getAttribute(constants.orderKeyAttr), 10),
+					direction = constants.directionUp;
 
-					if (hasClass(th, constants.activeTh)) {
-						if (hasClass(th, constants.arrowUp)) {
-							removeClass(th, constants.arrowUp);
-							addClass(th, constants.arrowDown);
-							direction = constants.directionDown;
-						} else {
-							removeClass(th, constants.arrowDown);
-							addClass(th, constants.arrowUp);
-							direction = constants.directionUp;
-						}
-					} else {
-						for (i = 0; i < orderableHeaders.length; i++) {
-							removeClass(orderableHeaders[i], constants.activeTh);
-							removeClass(orderableHeaders[i], constants.arrowUp);
-							removeClass(orderableHeaders[i], constants.arrowDown);
-						}
-
-						addClass(th, constants.activeTh);
-						addClass(th, constants.arrowUp);
-						direction = constants.directionUp;
+				if (hasClass(th, constants.arrowUp)) {
+					removeClass(th, constants.arrowUp);
+					addClass(th, constants.arrowDown);
+					direction = constants.directionDown;
+				} else if (hasClass(th, constants.arrowDown)) {
+					removeClass(th, constants.arrowDown);
+					addClass(th, constants.arrowUp);
+					direction = constants.directionUp;
+				} else {
+					for (i = 0; i < orderableHeaders.length; i++) {
+						removeClass(orderableHeaders[i], constants.arrowUp);
+						removeClass(orderableHeaders[i], constants.arrowDown);
 					}
 
-					onOrder({ key: key, direction: direction });
+					addClass(th, constants.arrowUp);
+					direction = constants.directionUp;
 				}
+
+				onOrder({ key: key, direction: direction });
 			};
 
 			orderableRow.addEventListener('click', function (e) {
-				clickTh(e.target);
+				var th = getParentWithAttr(e.target, constants.orderKeyAttr, orderableRow);
+				if (th) {
+					clickTh(th);
+				}
+			}, false);
+
+			orderableRow.addEventListener('mousedown', function (e) {
+				var th = getParentWithAttr(e.target, constants.orderKeyAttr, orderableRow);
+				if (th) {
+					addClass(th, constants.beingClicked);
+					if (touchesScrollSpace && connectedToScrollTh === th) {
+						addClass(scrollSpace, constants.beingClicked);
+					}
+				}
+			}, false);
+
+			orderableRow.addEventListener('mouseup', function () {
+				for (i = 0; i < orderableHeaders.length; i++) {
+					removeClass(orderableHeaders[i], constants.beingClicked);
+				}
+				removeClass(scrollSpace, constants.beingClicked);
 			}, false);
 
 			if (touchesScrollSpace) {
 				scrollSpace.addEventListener('click', function (e) {
 					clickTh(connectedToScrollTh);
+				}, false);
+
+				scrollSpace.addEventListener('mousedown', function (e) {
+					addClass(scrollSpace, constants.beingClicked);
+					addClass(connectedToScrollTh, constants.beingClicked);
+				}, false);
+
+				scrollSpace.addEventListener('mouseup', function (e) {
+					removeClass(scrollSpace, constants.beingClicked);
+					removeClass(connectedToScrollTh, constants.beingClicked);
 				}, false);
 			}
 
@@ -102,6 +136,9 @@
 					orderableHeaders[i].addEventListener('mouseleave', function (e) {
 						removeClass(e.target, constants.thHovered);
 						removeClass(scrollSpace, constants.thHovered);
+
+						removeClass(e.target, constants.beingClicked);
+						removeClass(scrollSpace, constants.beingClicked);
 					}, false);
 				} else {
 					orderableHeaders[i].addEventListener('mouseenter', function (e) {
@@ -110,6 +147,7 @@
 
 					orderableHeaders[i].addEventListener('mouseleave', function (e) {
 						removeClass(e.target, constants.thHovered);
+						removeClass(e.target, constants.beingClicked);
 					}, false);
 				}
 			}
@@ -127,7 +165,6 @@
 			}
 
 			// init arrows
-			addClass(orderableHeaders[0], constants.activeTh);
 			addClass(orderableHeaders[0], constants.arrowUp);
     }
 	};

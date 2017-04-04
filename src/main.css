@@ -41,7 +41,12 @@
   cursor: pointer;
 }
 
-.table-orderable .st-active::after {
+.st-mousedown {
+  background: purple;
+}
+
+.table-orderable .st-arrow-up::after,
+.table-orderable .st-arrow-down::after {
   position: absolute;
   display: block;
   right: 5px;
@@ -49,11 +54,11 @@
   transform: translateY(-50%);
 }
 
-.table-orderable .st-active.st-arrow-up::after {
+.table-orderable .st-arrow-up::after {
   content: "U";
 }
 
-.table-orderable .st-active.st-arrow-down::after {
+.table-orderable .st-arrow-down::after {
   content: "D";
 }
 
