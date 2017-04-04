@@ -3,7 +3,7 @@ var stNamespace = stNamespace || {};
 (function (ns) {
 	var constants = ns.constants;
 
-	var tableStyleAttr = 'style="width: 100%; border-collapse: collapse; table-layout: fixed; box-sizing: border-box;"';
+	var tableStyleAttr = 'style="width: 100%; border-collapse: collapse; table-layout: fixed; padding: 0; margin: 0; box-sizing: border-box;"';
 
 	var tableTemplate =
 		'<table class="' + constants.tableContainerCls + '" ' + tableStyleAttr + '>' +
