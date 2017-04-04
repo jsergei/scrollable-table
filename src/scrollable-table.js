@@ -60,7 +60,7 @@ var stNamespace = stNamespace || {};
 	}
 
 	function wrapUpIntoTemplate(el) {
-		el.className += ' container';
+		ns.addClass(el, 'container');
 
 		// Init a document fragment with a prepared html template.
 		var frg = document.createDocumentFragment();
@@ -80,7 +80,9 @@ var stNamespace = stNamespace || {};
 		if (colGroup) {
 			thead.appendChild(colGroup.cloneNode(true));
 		}
-		theadClone.setAttribute('data-bind', 'orderableHeader: {scrollSpace: scrollSpace, onOrder: onOrder}');
+		if (ns.hasClass(el, constants.tableOrderable)) {
+			theadClone.setAttribute('data-bind', 'orderableHeader: {scrollSpace: scrollSpace, onOrder: onOrder}');
+		}
 		thead.appendChild(theadClone);
 
 		// Clone and move the existing body.

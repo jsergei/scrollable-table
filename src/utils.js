@@ -8,6 +8,7 @@ var stNamespace = stNamespace || {};
 		arrowUp: 'st-arrow-up',
 		arrowDown: 'st-arrow-down',
 		beingClicked: 'st-mousedown',
+    tableOrderable: 'table-orderable',
 		directionUp: 0,
 		directionDown: 1
 	};
@@ -39,7 +40,7 @@ var stNamespace = stNamespace || {};
     }
   };
 
-	ns.getParentWithAttr = function(element, parentAttr, topParent) {
+	ns.getParentWithAttr = function getParentWithAttr(element, parentAttr, topParent) {
 		if (element.hasAttribute(parentAttr)) {
 			return element;
 		} else if (element !== topParent && element.parentNode) {
