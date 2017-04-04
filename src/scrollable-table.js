@@ -3,7 +3,7 @@ var stNamespace = stNamespace || {};
 (function (ns) {
 	var constants = ns.constants;
 
-	var tableStyleAttr = 'style="width: 100%; border-collapse: collapse; table-layout: fixed;"';
+	var tableStyleAttr = 'style="width: 100%; border-collapse: collapse; table-layout: fixed; box-sizing: border-box;"';
 
 	var tableTemplate =
 		'<table class="' + constants.tableContainerCls + '" ' + tableStyleAttr + '>' +
@@ -46,13 +46,14 @@ var stNamespace = stNamespace || {};
 		for (var i = 1; i <= columnNum; i++) {
 			tr.appendChild(document.createElement('td'));
 		}
+		footer.style.boxSizing = 'border-box';
 		return footer;
 	}
 
 	function showFooter(selectors, height, isEmpty) {
-		selectors.footer.style.display = "table-row-group";
 		selectors.footerRow.style.height = height + 'px';
 		selectors.footer.className = isEmpty ? '' : constants.borderTopCls;
+		selectors.footer.style.display = "table-row-group";
 	}
 
 	function hideFooter(selectors) {
@@ -64,6 +65,7 @@ var stNamespace = stNamespace || {};
 	function wrapUpIntoTemplate(el) {
 		ns.addClass(el, constants.rootCls);
 		ns.addClass(el, constants.borderAllCls);
+		el.style.boxSizing = 'border-box';
 
 		// Init a document fragment with a prepared html template.
 		var frg = document.createDocumentFragment();
@@ -123,6 +125,7 @@ var stNamespace = stNamespace || {};
 	}
 
 	function drawBottomLines(selectors) {
+		hideFooter(selectors);
 		var heightDiff = selectors.bodyContainer.offsetHeight - selectors.body.offsetHeight;
 		if (heightDiff > 0) {
 			showFooter(selectors, heightDiff, selectors.body.childElementCount === 0);
