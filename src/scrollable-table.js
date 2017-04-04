@@ -3,19 +3,21 @@ var stNamespace = stNamespace || {};
 (function (ns) {
 	var constants = ns.constants;
 
+	var tableStyleAttr = 'style="width: 100%; border-collapse: collapse; table-layout: fixed;"';
+
 	var tableTemplate =
-		'<table class="container-table">' +
-		  '<tr>' +
+		'<table class="' + constants.tableContainerCls + '" ' + tableStyleAttr + '>' +
+		  '<tr class="' + constants.borderBottomCls + '">' +
 		    '<td>' +
-		       '<table class="head-table">' +
+		       '<table class="' + constants.headCls + '" ' + tableStyleAttr + '>' +
 		       '</table>' +
 		    '</td>' +
-				'<td class="scroll-space" style="width: 0"></td>' +
+				'<td class="' + constants.scrollCls + '" style="width: 0"></td>' +
 		  '</tr>' +
 		  '<tr>' +
 		    '<td colspan="2">' +
-		       '<div class="body-table-container">' +
-		         '<table class="body-table">' +
+		       '<div class="' + constants.bodyContainerCls + '" style="overflow-y: auto; overflow-x: hidden;">' +
+		         '<table class="' + constants.bodyCls + '" ' + tableStyleAttr + '>' +
 		         '</table>' +
 		       '</div>' +
 		    '</td>' +
@@ -37,7 +39,7 @@ var stNamespace = stNamespace || {};
 	}
 
 	function createFooter(el) {
-		var columnNum = el.querySelectorAll('.head-table tr:last-child th').length;
+		var columnNum = el.querySelectorAll('.' + constants.headCls + ' tr:last-child th').length;
 		var footer = document.createElement('tfoot');
 		var tr = document.createElement('tr');
 		footer.appendChild(tr);
@@ -50,7 +52,7 @@ var stNamespace = stNamespace || {};
 	function showFooter(selectors, height, isEmpty) {
 		selectors.footer.style.display = "table-row-group";
 		selectors.footerRow.style.height = height + 'px';
-		selectors.footer.className = isEmpty ? 'no-rows' : '';
+		selectors.footer.className = isEmpty ? '' : constants.borderTopCls;
 	}
 
 	function hideFooter(selectors) {
@@ -60,7 +62,8 @@ var stNamespace = stNamespace || {};
 	}
 
 	function wrapUpIntoTemplate(el) {
-		ns.addClass(el, 'container');
+		ns.addClass(el, constants.rootCls);
+		ns.addClass(el, constants.borderAllCls);
 
 		// Init a document fragment with a prepared html template.
 		var frg = document.createDocumentFragment();
@@ -76,7 +79,7 @@ var stNamespace = stNamespace || {};
 
 		// Clone and move the exsiting head.
 		var theadClone = el.querySelector('table thead').cloneNode(true);
-		var thead = frg.querySelector('.head-table');
+		var thead = frg.querySelector('.' + constants.headCls);
 		if (colGroup) {
 			thead.appendChild(colGroup.cloneNode(true));
 		}
@@ -88,29 +91,29 @@ var stNamespace = stNamespace || {};
 		// Clone and move the existing body.
 		var tbodyClone = el.querySelector('table tbody').cloneNode(true);
 		tbodyClone.setAttribute('data-bind', 'foreach: rows, afterForeachDomUpdate: {init: afterDomInit, update: afterDomUpdate}');
-		var tbody = frg.querySelector('.body-table');
+		var tbody = frg.querySelector('.' + constants.bodyCls);
 		if (colGroup) {
 			tbody.appendChild(colGroup.cloneNode(true));
 		}
 		tbody.appendChild(tbodyClone);
 		tbody.appendChild(createFooter(frg));
 		hideFooter({
-			footer: frg.querySelector('.body-table tfoot'),
-			footerRow: frg.querySelector('.body-table tfoot tr')
+			footer: frg.querySelector('.' + constants.bodyCls + ' tfoot'),
+			footerRow: frg.querySelector('.' + constants.bodyCls + ' tfoot tr')
 		});
 
 		el.replaceChild(frg, el.firstChild);
 
 		return {
 			root: el,
-			rootHeaderRow: el.querySelector('.container-table > tbody > tr:first-child'),
-			headerTable: el.querySelector('.head-table'),
-			scrollSpace: el.querySelector('.scroll-space'),
-			bodyContainer: el.querySelector('.body-table-container'),
-			bodyTable: el.querySelector('.body-table'),
-			body: el.querySelector('.body-table tbody'),
-			footer: el.querySelector('.body-table tfoot'),
-			footerRow: el.querySelector('.body-table tfoot tr')
+			rootHeaderRow: el.querySelector('.' + constants.tableContainerCls +  ' > tbody > tr:first-child'),
+			headerTable: el.querySelector('.' + constants.headCls),
+			scrollSpace: el.querySelector('.' + constants.scrollCls),
+			bodyContainer: el.querySelector('.' + constants.bodyContainerCls),
+			bodyTable: el.querySelector('.' + constants.bodyCls),
+			body: el.querySelector('.' + constants.bodyCls + ' tbody'),
+			footer: el.querySelector('.' + constants.bodyCls + ' tfoot'),
+			footerRow: el.querySelector('.' + constants.bodyCls + ' tfoot tr')
 		};
 	}
 
@@ -129,10 +132,12 @@ var stNamespace = stNamespace || {};
 	}
 
 	function setBodyContainerHeight(selectors) {
-		var rootH = selectors.root.offsetHeight,
-			rootHeaderRowH = selectors.rootHeaderRow.offsetHeight,
-			bordersSumH = 3;
-		selectors.bodyContainer.style.height = rootH - rootHeaderRowH - bordersSumH + 'px';
+		selectors.bodyContainer.style.height = selectors.root.offsetHeight
+			- selectors.rootHeaderRow.offsetHeight
+			- ns.getBorderWidth(selectors.root, 'border-top-width')
+			- ns.getBorderWidth(selectors.root, 'border-bottom-width')
+			- ns.getBorderWidth(selectors.rootHeaderRow, 'border-bottom-width')
+			 + 'px';
 	}
 
 	ko.bindingHandlers.scrollableTable = {

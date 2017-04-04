@@ -1,38 +1,40 @@
-.container {
-  border: 1px solid black;
+.st-root {
   height: 250px;
   box-sizing: border-box;
 }
 
-.container * {
+.st-root * {
   box-sizing: border-box;
 }
 
-.container table {
-  table-layout: fixed;
+table {
+  text-align: center;
 }
 
-.container-table {
-   width: 100%;
-   border-collapse: collapse;
-}
-
-.container-table > tbody > tr:first-child {
-  background: #E1E1E1;
+.st-border-bottom {
   border-bottom: 1px solid black;
 }
 
-.head-table {
-  width: 100%;
+.st-border-top {
+  border-top: 1px solid black;
 }
 
-.head-table th {
+.st-border-all {
+  border: 1px solid black;
+}
+
+.st-table-container > tbody > tr:first-child {
+  background: #E1E1E1;
+}
+
+.st-head th {
   padding: 10px 5px;
   height: 3em;
   position: relative;
 }
 
-.table-orderable .head-table th {
+.table-orderable th.st-arrow-up,
+.table-orderable th.st-arrow-down {
   padding-right: 20px;
 }
 
@@ -62,33 +64,15 @@
   content: "D";
 }
 
-.head-table th + th {
+.st-head th + th {
   border-left: 1px solid black;
 }
 
-.body-table-container {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.body-table {
-  width: 100%;
-  text-align: center;
-}
-
-.body-table tfoot {
-  border-top: 1px solid black;
-}
-
-.body-table tfoot.no-rows {
-  border-top: none;
-}
-
-.body-table td + td {
+.st-body td + td {
   border-left: 1px solid black;
 }
 
-.body-table tr + tr {
+.st-body tr + tr {
   border-top: 1px solid black;
 }
 
@@ -106,7 +90,7 @@
   width: 20%;
 }
 
-.body-table td {
+.st-body td {
   padding: 8px 3px;
   max-width: 0;
   overflow: hidden;

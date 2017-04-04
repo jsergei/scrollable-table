@@ -9,6 +9,15 @@ var stNamespace = stNamespace || {};
 		arrowDown: 'st-arrow-down',
 		beingClicked: 'st-mousedown',
     tableOrderable: 'table-orderable',
+    rootCls: 'st-root',
+    borderBottomCls: 'st-border-bottom',
+    borderTopCls: 'st-border-top',
+    borderAllCls: 'st-border-all',
+    tableContainerCls: 'st-table-container',
+    headCls: 'st-head',
+    bodyCls: 'st-body',
+    bodyContainerCls: 'st-body-container',
+    scrollCls: 'st-scroll',
 		directionUp: 0,
 		directionDown: 1
 	};
@@ -41,7 +50,7 @@ var stNamespace = stNamespace || {};
   };
 
 	ns.getParentWithAttr = function getParentWithAttr(element, parentAttr, topParent) {
-		if (element.hasAttribute(parentAttr)) {
+		if (element.hasAttribute && element.hasAttribute(parentAttr)) {
 			return element;
 		} else if (element !== topParent && element.parentNode) {
 			return getParentWithAttr(element.parentNode, parentAttr);
@@ -64,5 +73,9 @@ var stNamespace = stNamespace || {};
 			}
 		}
 	};
+
+  ns.getBorderWidth = function (element, border) {
+    return parseInt(getComputedStyle(element, null).getPropertyValue(border), 10);
+  }
 
 })(stNamespace);
