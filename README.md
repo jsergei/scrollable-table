@@ -1,2 +1,2 @@
 # scrollable-table
-Scrollable table with minimum amount of javascript. Supports multiline headers and up/down arrows on header clicks.
+JanillaJS/Knockout scrollable table with minimum amount of reflows on resizing. Supports up/down arrows on header clicks, accomodates full size of its parent and has built-it resizing interface.
