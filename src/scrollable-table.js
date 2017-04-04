@@ -1,174 +1,7 @@
-(function () {
-	var constants = {
-		thHovered: 'head-hover',
-		orderKeyAttr: 'data-orderkey',
-		arrowUp: 'st-arrow-up',
-		arrowDown: 'st-arrow-down',
-		beingClicked: 'st-mousedown',
-		directionUp: 0,
-		directionDown: 1
-	};
+var stNamespace = stNamespace || {};
 
-	ko.bindingHandlers.afterForeachDomUpdate = {
-		init: function(element, valueAccessor, allBindings) {
-			var arg = valueAccessor();
-			allBindings().foreach.subscribe(function (newValue) {
-				arg.update();
-			});
-			arg.init();
-    }
-	};
-
-	function addClass(element, cls) {
-		if (!hasClass(element, cls)) {
-			element.className = element.className.length ? (element.className + ' ' + cls) : cls;
-		}
-	}
-
-	function hasClass(element, cls) {
-    return element.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
-	}
-
-	function removeClass(element, cls) {
-    if (hasClass(element, cls)) {
-      var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
-      element.className = element.className.replace(reg, ' ').trim();
-    }
-  }
-
-	function getParentWithAttr(element, parentAttr, topParent) {
-		if (element.hasAttribute(parentAttr)) {
-			return element;
-		} else if (element !== topParent && element.parentNode) {
-			return getParentWithAttr(element.parentNode, parentAttr);
-		} else {
-			return null;
-		}
-	}
-
-	ko.bindingHandlers.orderableHeader = {
-		init: function(element, valueAccessor) {
-			var args = valueAccessor(),
-				scrollSpace = args.scrollSpace,
-				onOrder = args.onOrder,
-				orderableRow = element.querySelector('tr:last-child'),
-				orderableHeaders = orderableRow.querySelectorAll('th[data-orderkey]'),
-				i = 0, j = 0;
-
-			if (!orderableHeaders.length)
-				return;
-
-			var touchesScrollSpace = orderableHeaders[orderableHeaders.length - 1] === orderableRow.querySelector('th:last-child');
-			var connectedToScrollTh = orderableHeaders[orderableHeaders.length - 1];
-
-			var clickTh = function (th) {
-				var key = parseInt(th.getAttribute(constants.orderKeyAttr), 10),
-					direction = constants.directionUp;
-
-				if (hasClass(th, constants.arrowUp)) {
-					removeClass(th, constants.arrowUp);
-					addClass(th, constants.arrowDown);
-					direction = constants.directionDown;
-				} else if (hasClass(th, constants.arrowDown)) {
-					removeClass(th, constants.arrowDown);
-					addClass(th, constants.arrowUp);
-					direction = constants.directionUp;
-				} else {
-					for (i = 0; i < orderableHeaders.length; i++) {
-						removeClass(orderableHeaders[i], constants.arrowUp);
-						removeClass(orderableHeaders[i], constants.arrowDown);
-					}
-
-					addClass(th, constants.arrowUp);
-					direction = constants.directionUp;
-				}
-
-				onOrder({ key: key, direction: direction });
-			};
-
-			orderableRow.addEventListener('click', function (e) {
-				var th = getParentWithAttr(e.target, constants.orderKeyAttr, orderableRow);
-				if (th) {
-					clickTh(th);
-				}
-			}, false);
-
-			orderableRow.addEventListener('mousedown', function (e) {
-				var th = getParentWithAttr(e.target, constants.orderKeyAttr, orderableRow);
-				if (th) {
-					addClass(th, constants.beingClicked);
-					if (touchesScrollSpace && connectedToScrollTh === th) {
-						addClass(scrollSpace, constants.beingClicked);
-					}
-				}
-			}, false);
-
-			orderableRow.addEventListener('mouseup', function () {
-				for (i = 0; i < orderableHeaders.length; i++) {
-					removeClass(orderableHeaders[i], constants.beingClicked);
-				}
-				removeClass(scrollSpace, constants.beingClicked);
-			}, false);
-
-			if (touchesScrollSpace) {
-				scrollSpace.addEventListener('click', function (e) {
-					clickTh(connectedToScrollTh);
-				}, false);
-
-				scrollSpace.addEventListener('mousedown', function (e) {
-					addClass(scrollSpace, constants.beingClicked);
-					addClass(connectedToScrollTh, constants.beingClicked);
-				}, false);
-
-				scrollSpace.addEventListener('mouseup', function (e) {
-					removeClass(scrollSpace, constants.beingClicked);
-					removeClass(connectedToScrollTh, constants.beingClicked);
-				}, false);
-			}
-
-			for (i = 0; i < orderableHeaders.length; i++) {
-				if (touchesScrollSpace && i === orderableHeaders.length - 1) {
-					orderableHeaders[i].addEventListener('mouseenter', function (e) {
-						addClass(e.target, constants.thHovered);
-						addClass(scrollSpace, constants.thHovered);
-					}, false);
-
-					orderableHeaders[i].addEventListener('mouseleave', function (e) {
-						removeClass(e.target, constants.thHovered);
-						removeClass(scrollSpace, constants.thHovered);
-
-						removeClass(e.target, constants.beingClicked);
-						removeClass(scrollSpace, constants.beingClicked);
-					}, false);
-				} else {
-					orderableHeaders[i].addEventListener('mouseenter', function (e) {
-						addClass(e.target, constants.thHovered);
-					}, false);
-
-					orderableHeaders[i].addEventListener('mouseleave', function (e) {
-						removeClass(e.target, constants.thHovered);
-						removeClass(e.target, constants.beingClicked);
-					}, false);
-				}
-			}
-
-			if (touchesScrollSpace) {
-				scrollSpace.addEventListener('mouseenter', function (e) {
-					addClass(e.target, constants.thHovered);
-					addClass(connectedToScrollTh, constants.thHovered);
-				}, false);
-
-				scrollSpace.addEventListener('mouseleave', function (e) {
-					removeClass(e.target, constants.thHovered);
-					removeClass(connectedToScrollTh, constants.thHovered);
-				}, false);
-			}
-
-			// init arrows
-			addClass(orderableHeaders[0], constants.arrowUp);
-    }
-	};
-
+(function (ns) {
+	var constants = ns.constants;
 
 	var tableTemplate =
 		'<table class="container-table">' +
@@ -188,21 +21,6 @@
 		    '</td>' +
 		  '</tr>' +
 		'</table>';
-
-	function clean(node) {
-		for(var n = 0; n < node.childNodes.length; n ++) {
-			var child = node.childNodes[n];
-			if (child.nodeType === 8 ||
-				(child.nodeType === 3 && !/\S/.test(child.nodeValue)))
-			{
-				node.removeChild(child);
-				n --;
-			}
-			else if(child.nodeType === 1) {
-				clean(child);
-			}
-		}
-	}
 
 	function validateSourceTemplateStructure(el) {
 		if (el.childElementCount !== 1 || el.firstChild.tagName.toLowerCase() !== 'table')
@@ -317,7 +135,7 @@
 
 	ko.bindingHandlers.scrollableTable = {
 	    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-				clean(element);
+				ns.clean(element);
 				validateSourceTemplateStructure(element);
 				var selectors = wrapUpIntoTemplate(element);
 
@@ -355,4 +173,4 @@
 	    update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
 	    }
 	};
-})();
+})(stNamespace);
