@@ -1,2 +1,2 @@
 # scrollable-table
-JanillaJS/Knockout scrollable table with minimum amount of reflows on resizing. Supports up/down arrows on header clicks, accomodates full size of its parent and has built-it resizing interface.
+JanillaJS/Knockout scrollable table with minimum amount of reflows on resizing. Supports up/down arrows on header clicks, accomodates full size of its parent and has built-it resizing interface. The implementation has full support for latest versions of Chrome, Firefox, and IE down to IE9. This is a high performance implementation of scrollable tables that have the scrollbar only in the tbody area. The input template for the plugin is a normal table elmeent with possibly a colgroup section to set column widths using css.
